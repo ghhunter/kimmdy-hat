@@ -180,7 +180,7 @@ class HAT_reaction(ReactionPlugin):
             # Create multiprocessing Process to ensure memory is freed after prediction
 
             pool = Pool(processes=1) # only 1 needed
-            result = pool.apply(make_predictions,args=([u]),**kwargs)
+            result = pool.apply(make_predictions,args=([u]),kwds=kwargs)
 
             # Get receipe collection from result
             recipe_collection = result.get()[0]
