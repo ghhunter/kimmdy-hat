@@ -19,7 +19,7 @@ import shutil
 from pathlib import Path
 from tqdm.autonotebook import tqdm
 
-from multiprocessing import Pool
+from multiprocessing import Process, Queue
 
 class HAT_reaction(ReactionPlugin):
     def __init__(self, *args, **kwargs):
@@ -177,15 +177,7 @@ class HAT_reaction(ReactionPlugin):
                 "logger": logger,
             }
 
-            # Create multiprocessing Process to ensure memory is freed after prediction
-
-            pool = Pool(processes=1) # only 1 needed
-            result = pool.apply(make_predictions,args=([u]),kwds=kwargs)
-
-            # Get receipe collection from result
-            recipe_collection = result.get()[0]
-
-            #recipe_collection = make_predictions(u, **kwargs)
+            recipe_collection = make_predictions(u, **kwargs)
 
         except Exception as e:
             # backup in case of failure
@@ -198,7 +190,28 @@ class HAT_reaction(ReactionPlugin):
 
         return recipe_collection
 
+# Decorator and helper function to free the gpu
+def _queue_helper(func, q, *args, **kwargs):
+    res = func(*args, **kwargs)
+    q.put(res)
 
+def free_gpu(func):
+
+    def wrapper(*args, **kwargs):
+        q = Queue(1)
+        p = Process(target=_queue_helper,
+                    args = (func, q, *args),
+                    kwargs=kwargs)
+        p.start()
+        p.join()
+        res = q.get()
+        q.close()
+        p.close()
+        return res
+
+    return wrapper
+
+@free_gpu
 def make_predictions(
     u: MDA.Universe,
     se_dir,
