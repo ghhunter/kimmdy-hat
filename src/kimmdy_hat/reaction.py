@@ -9,7 +9,7 @@ from kimmdy_hat.utils.trajectory_utils import (
     extract_subsystems,
 )
 
-from kimmdy_hat.utils.utils import find_radicals
+from kimmdy_hat.utils.utils import find_radicals, free_gpu
 from kimmdy.recipe import Bind, Break, Place, Relax, Recipe, RecipeCollection
 from kimmdy.plugins import ReactionPlugin
 
@@ -18,8 +18,6 @@ from tempfile import TemporaryDirectory
 import shutil
 from pathlib import Path
 from tqdm.autonotebook import tqdm
-
-from multiprocessing import Process, Queue
 
 class HAT_reaction(ReactionPlugin):
     def __init__(self, *args, **kwargs):
@@ -189,27 +187,6 @@ class HAT_reaction(ReactionPlugin):
             se_tmpdir.cleanup()
 
         return recipe_collection
-
-# Decorator and helper function to free the gpu
-def _queue_helper(func, q, *args, **kwargs):
-    res = func(*args, **kwargs)
-    q.put(res)
-
-def free_gpu(func):
-
-    def wrapper(*args, **kwargs):
-        q = Queue(1)
-        p = Process(target=_queue_helper,
-                    args = (func, q, *args),
-                    kwargs=kwargs)
-        p.start()
-        p.join()
-        res = q.get()
-        q.close()
-        p.close()
-        return res
-
-    return wrapper
 
 @free_gpu
 def make_predictions(
