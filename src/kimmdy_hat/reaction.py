@@ -165,7 +165,6 @@ class HAT_reaction(ReactionPlugin):
 
             kwargs = {
                 "se_dir": se_dir,
-                "hparas": self.hparas,
                 "prediction_scheme": self.prediction_scheme,
                 "R": self.R,
                 "temperature": self.temperature,
@@ -203,7 +202,6 @@ class HAT_reaction(ReactionPlugin):
 def make_predictions(
     u: MDA.Universe,
     se_dir,
-    hparas,
     prediction_scheme,
     R,
     temperature,
