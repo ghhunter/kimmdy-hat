@@ -144,7 +144,7 @@ def test_traj_to_recipes(recipe_collection):
         assert len(recipe.timespans) in [3, 6]
 
 @pytest.mark.gpu
-def gpu_release_recipe_collection(recipe_collection):
+def test_gpu_memory_release(recipe_collection):
     print(recipe_collection.recipes)
     assert 'GPU' in [device.device_type for device in tf.config.list_physical_devices]
     assert tf.config.experimental.get_memory_usage('GPU:0') == 0
