@@ -146,7 +146,7 @@ def test_traj_to_recipes(recipe_collection):
 @pytest.mark.gpu
 def test_gpu_memory_release(recipe_collection):
     print(recipe_collection.recipes)
-    assert 'GPU' in [device.device_type for device in tf.config.list_physical_devices]
+    assert 'GPU' in [device.device_type for device in tf.config.list_physical_devices()]
     assert tf.config.experimental.get_memory_usage('GPU:0') == 0
 
 @pytest.fixture
