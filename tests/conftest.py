@@ -5,7 +5,7 @@ def pytest_addoption(parser):
                      default=False, help="enable gpu memory release tests")
     
 def pytest_configure(config):
-    config.addininvalue_line("markers","gpu: mark test to be ran on GPU")
+    config.addinivalue_line("markers","gpu: mark test to be ran on GPU")
 
 def pytest_collection_modifyitems(config,items):
     if config.getoption("--gpu"):

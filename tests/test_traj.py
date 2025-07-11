@@ -7,7 +7,7 @@ import logging
 import tensorflow as tf
 
 # pytest decorator to have gpu checks off by default 
-gpu = pytest.mark.skipif("not config.getoption('gpu')")
+#gpu = pytest.mark.skipif("not config.getoption('gpu')")
 
 # %%
 class DummyClass:
@@ -143,7 +143,7 @@ def test_traj_to_recipes(recipe_collection):
         assert len(recipe.rates) in [3, 6]
         assert len(recipe.timespans) in [3, 6]
 
-@gpu
+@pytest.mark.gpu
 def gpu_release_recipe_collection(recipe_collection):
     print(recipe_collection.recipes)
     assert 'GPU' in [device.device_type for device in tf.config.list_physical_devices]
