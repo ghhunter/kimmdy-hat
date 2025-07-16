@@ -6,9 +6,6 @@ from pprint import pprint
 import logging
 import tensorflow as tf
 
-# pytest decorator to have gpu checks off by default 
-#gpu = pytest.mark.skipif("not config.getoption('gpu')")
-
 # %%
 class DummyClass:
     logger = logging.getLogger()
