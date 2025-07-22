@@ -4,7 +4,10 @@ from kimmdy_hat import HAT_reaction
 import pytest
 from pprint import pprint
 import logging
-import tensorflow as tf
+import subprocess
+import os
+
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 # %%
 class DummyClass:
@@ -141,6 +144,17 @@ def test_traj_to_recipes(recipe_collection):
         assert len(recipe.timespans) in [3, 6]
 
 @pytest.fixture
+def gpu_info(recipe_collection):
+    gpu_list = subprocess.check_output('nvidia-smi -L',shell=True)
+    gpu_mem = subprocess.check_output('nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits', shell=True)
+    return [gpu_list.decode('utf-8').rstrip(),int(gpu_mem.decode('utf-8').rstrip())]
+
+@pytest.mark.gpu
+def test_gpu_memory_release(gpu_info):
+    assert 'GPU' in gpu_info[0]
+    assert gpu_info[1] == 0
+
+@pytest.fixture
 def recipe_collection_pbc(tmpdir):
     plgn = HAT_reaction("Hat_reaction", DummyRunmanager())
 
@@ -174,8 +188,3 @@ def test_traj_to_recipes_pbc(recipe_collection_pbc):
         assert len(recipe.rates) in [18, 8]
         assert len(recipe.timespans) in [18, 8]
 
-@pytest.mark.gpu
-def test_gpu_memory_release(recipe_collection):
-    print(recipe_collection.recipes)
-    assert 'GPU' in [device.device_type for device in tf.config.list_physical_devices()]
-    assert tf.config.experimental.get_memory_usage('GPU:0') == 0

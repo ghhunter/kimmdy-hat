@@ -143,9 +143,9 @@ def free_gpu(func):
                     kwargs=kwargs)
         p.start()
         p.join()
-        res = q.get()
-        q.close()
+        res = q.get(block=True,timeout=100)
         p.close()
+        q.close()
         return res
 
     return wrapper
