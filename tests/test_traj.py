@@ -5,9 +5,6 @@ import pytest
 from pprint import pprint
 import logging
 import subprocess
-import os
-
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 # %%
 class DummyClass:
