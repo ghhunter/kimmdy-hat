@@ -6,6 +6,7 @@ from pprint import pprint
 import logging
 import subprocess
 
+
 # %%
 class DummyClass:
     logger = logging.getLogger()
@@ -140,16 +141,21 @@ def test_traj_to_recipes(recipe_collection):
         assert len(recipe.rates) in [3, 6]
         assert len(recipe.timespans) in [3, 6]
 
+
 @pytest.fixture
 def gpu_info(recipe_collection):
-    gpu_list = subprocess.check_output('nvidia-smi -L',shell=True)
-    gpu_mem = subprocess.check_output('nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits', shell=True)
-    return [gpu_list.decode('utf-8').rstrip(),int(gpu_mem.decode('utf-8').rstrip())]
+    gpu_list = subprocess.check_output("nvidia-smi -L", shell=True)
+    gpu_mem = subprocess.check_output(
+        "nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits", shell=True
+    )
+    return [gpu_list.decode("utf-8").rstrip(), int(gpu_mem.decode("utf-8").rstrip())]
+
 
 @pytest.mark.gpu
 def test_gpu_memory_release(gpu_info):
-    assert 'GPU' in gpu_info[0]
+    assert "GPU" in gpu_info[0]
     assert gpu_info[1] == 0
+
 
 @pytest.fixture
 def recipe_collection_pbc(tmpdir):
@@ -184,4 +190,3 @@ def test_traj_to_recipes_pbc(recipe_collection_pbc):
     for recipe in recipe_collection_pbc.recipes:
         assert len(recipe.rates) in [18, 8]
         assert len(recipe.timespans) in [18, 8]
-

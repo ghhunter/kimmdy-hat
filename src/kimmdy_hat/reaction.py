@@ -19,6 +19,7 @@ import shutil
 from pathlib import Path
 from tqdm.autonotebook import tqdm
 
+
 class HAT_reaction(ReactionPlugin):
     def __init__(self, *args, **kwargs):
 
@@ -187,6 +188,7 @@ class HAT_reaction(ReactionPlugin):
             se_tmpdir.cleanup()
 
         return recipe_collection
+
 
 @free_gpu
 def make_predictions(

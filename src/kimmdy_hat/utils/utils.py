@@ -2,6 +2,7 @@ import MDAnalysis as mda
 import numpy as np
 from multiprocessing import Process, Queue
 
+
 def find_radicals(u):
     """
     finds radicals in a MDAnalysis universe
@@ -129,21 +130,21 @@ def check_cylinderclash(a, b, t, r_min=0.8, d_min=None, verbose=False):
     else:
         raise ValueError(f"Type/Shape of t wrong: {t}")
 
+
 # Decorator and helper function to free the gpu
 def _queue_helper(func, q, *args, **kwargs):
     res = func(*args, **kwargs)
     q.put(res)
 
+
 def free_gpu(func):
 
     def wrapper(*args, **kwargs):
         q = Queue(1)
-        p = Process(target=_queue_helper,
-                    args = (func, q, *args),
-                    kwargs=kwargs)
+        p = Process(target=_queue_helper, args=(func, q, *args), kwargs=kwargs)
         p.start()
         p.join()
-        res = q.get(block=True,timeout=100)
+        res = q.get(block=True, timeout=100)
         p.close()
         q.close()
         return res
