@@ -141,7 +141,6 @@ def test_traj_to_recipes(recipe_collection):
         assert len(recipe.timespans) in [3, 6]
 
 @pytest.fixture
-@pytest.mark.gpu
 def gpu_info(recipe_collection):
     gpu_list = subprocess.check_output('nvidia-smi -L',shell=True)
     gpu_mem = subprocess.check_output('nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits', shell=True)
